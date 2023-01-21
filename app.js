@@ -1,11 +1,27 @@
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3001;
+const Binance = require('node-binance-api');
+const binance = new Binance().options({
+  APIKEY: 'ZkxLhpLKK9SyRhxOXzi7kYlqx7MesYS0zTF6B9uCdhxoNkU4H4L23NLUFGf5wEkT',
+  APISECRET: '7CZMBVoPdRrYYhYW3l2E2fOuo6KzHnv3kYouKujJv8oA41cg4pRtHXMMoxBzjQ80'
+});
 
+app.get("/binance-total-margin-balance", async function (req, res, next) {
+  try {
+    const balances = await binance.futuresAccount();
+    const totalMarginBalance = await balances["totalMarginBalance"];
+    res.json(await totalMarginBalance);
+  } catch (err) {
+    console.error(err.message);
+    next(err);
+  }
+});
 app.get("/", (req, res) => res.type('html').send(html));
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
+// console.info(await binance.futuresAccount());
 
 const html = `
 <!DOCTYPE html>
